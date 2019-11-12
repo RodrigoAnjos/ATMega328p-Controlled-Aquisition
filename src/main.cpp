@@ -22,8 +22,8 @@
 #define BRC   ((F_CPU/16/BAUD) - 1)
 
 /* Port Output Definitions */
-#define    CLR(port,pin)  (port &= (~(1<<pin)))
-#define    SET(port,pin)  (port |= ( (1<<pin)))
+#define CLR(port,pin)     (port &= (~(1<<pin)))
+#define SET(port,pin)     (port |= ( (1<<pin)))
 #define TOGGLE(port,pin)  (port ^= ( (1<<pin)))
 
 /* ADC Definitions */
@@ -54,7 +54,7 @@ void USART_Transmit(uint8_t data)               // (p. 184)
 ISR(TIMER0_COMPA_vect)
 {
   /* Restart ADC Conversion */
-  ADCSRA |= (1 << ADSC)
+  ADCSRA |= (1 << ADSC);
   /*
       Set ports HIGH for Osciloscope Tracing
       of the code
@@ -91,6 +91,12 @@ ISR(TIMER0_COMPA_vect)
   }
   CLR(PORTB, 4);
 }
+
+ISR(ADC_vect)
+{
+  CLR(PORTB, 5);
+}
+
 
 /* Main Code */
 int main()
