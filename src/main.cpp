@@ -46,6 +46,8 @@ void USART_Transmit(uint8_t data)               // (p. 184)
   while ( ! ( UCSR0A & (1 << UDRE0)))           // (p. 195)
   {;}
 
+
+
   /* Fill Tx data frame with data*/
   UDR0 = data;                                  // (p. 195)
 }
