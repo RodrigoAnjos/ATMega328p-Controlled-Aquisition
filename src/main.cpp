@@ -1,8 +1,20 @@
-// Level 7 ATMega328p-ADC //
-// Level Description:
-//
+/*
+  Controlled Aquisition for ATMega328p
+
+  In this example, instead of acquiring ADC samples as de
+  conversion finishes, ATMega328p will wait until timer
+  interrup is finished. This program allows the user to acquire
+  samples at 44.100Hz. Some advantages are:
+
+  1. No oversampling, causing stress in both LabVIEW and serial port
+  2. Increased Stability for serial bus
+  3. Lower overhead for ATMega328p CPU
+
+ */
+
+
 #include <avr/io.h>
-#include<avr/interrupt.h>
+#include <avr/interrupt.h>
 
 /* Baudrate Definitions */
 #define F_CPU 16000000
@@ -61,8 +73,6 @@ ISR(ADC_vect)
   CLR(PORTB, 4);
 
 }
-
-
 
 /* Main Code */
 int main()
