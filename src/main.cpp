@@ -12,7 +12,7 @@
 
  */
 
-
+//#include "Arduino.h"
 #include <avr/io.h>
 #include <avr/interrupt.h>
 
@@ -22,8 +22,8 @@
 #define BRC   ((F_CPU/16/BAUD) - 1)
 
 /* Port Output Definitions */
-#define CLR(port,pin)     (port &= (~(1<<pin)))
-#define SET(port,pin)     (port |= ( (1<<pin)))
+#define    CLR(port,pin)  (port &= (~(1<<pin)))
+#define    SET(port,pin)  (port |= ( (1<<pin)))
 #define TOGGLE(port,pin)  (port ^= ( (1<<pin)))
 
 /* ADC Definitions */
@@ -40,7 +40,7 @@
 volatile uint8_t ADC_SPL_COUNT = 0;
 #define ADC_SPL_TH 128
 
-void USART_Transmit(uint8_t data)               // (p. 184)
+static void USART_Transmit(uint8_t data)               // (p. 184)
 {
   /* Wait until TX data frame is empty */
   while ( ! ( UCSR0A & (1 << UDRE0)))           // (p. 195)
@@ -99,8 +99,21 @@ ISR(ADC_vect)
 
 
 /* Main Code */
-int main()
+int main(void)
 {
+  //* Setup AVR Core *//
+  /* Disable Global Interrupts */
+  SREG &= ~(1 << 7);
+
+
+  //* Setup Hardware Interface *//
+  /* Setup pins, PB4 & PB5 as output pins */            // (p. 76)
+  /* Reset port B configurations */
+  PORTB = 0x00;
+  DDRB  = 0x00;
+  /* Setup pins 4 & 5 as outputs */
+  DDRB  = (1 << DDB4) | (1 << DDB5);
+
   //* Setup USART Interface *//
   /* Set Baudrate for TX & RX*/                         // (p. 183)
   UBRR0H = (BRC >> 8);
@@ -164,4 +177,21 @@ int main()
   ADCSRA |= (1 << ADEN);                                // (p. 263)
   /* Start ADC Conversion */
   ADCSRA |= (1 << ADSC);                                // (p. 263)
+
+  //* Finalize configurations *//
+  /* Re-Enable Global Interrupts */
+  /* Disable Global Interrupts */
+  SREG |= (1 << 7);
+
+  while (1)
+  {
+
+  }
+  return 0;
 }
+/*
+void loop()
+{
+
+}
+*/
